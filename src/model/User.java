@@ -20,8 +20,7 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.password = password;
-
-		// create new budget
+		this.budget = new Budget();
 	}
 
 	public String getUserName() {

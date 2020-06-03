@@ -116,7 +116,8 @@ public class Register {
 				
 				
 				//send the data to the controller
-				controller.addNewUser(nameField.getText(),firstNameText.getText(),lastNameText.getText(),passwordField.getText());
+				controller.addNewUser(nameField.getText(),firstNameField.getText(),lastNameField.getText(),passwordField.getText());
+				//controller.goToScreen("dashboard");
 			}
 		});
 		panel.add(loginBtn);
@@ -168,7 +169,7 @@ public class Register {
 		lblSignIn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				controller.goToScreen("sign in");
+				controller.goToScreen("sign in",null);
 			}
 		});
 		lblSignIn.setFont(new Font("Tahoma", Font.PLAIN, 10));

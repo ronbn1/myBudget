@@ -11,7 +11,7 @@ public class MyBudget {
 	private Model m;
 	private View v;
 	private Controller c;
-	private User user;
+	private User user= null;
 	
 	private MyBudget() {
 		Model m = new Model();
@@ -33,6 +33,8 @@ public class MyBudget {
 	public  void setUser(User user) {
 		this.user = user;
 	}
+	
+	
 	
 	
 }

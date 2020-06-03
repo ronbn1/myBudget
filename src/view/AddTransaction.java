@@ -6,6 +6,12 @@ import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import controller.Controller;
+import model.User;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Date;
+
 public class AddTransaction extends JFrame{
 	JPanel recordPanel;
 	JPanel mainPanel;
@@ -14,8 +20,13 @@ public class AddTransaction extends JFrame{
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
+	public String name;
+	public String type;
+	public String category;
+	public Date date;
+	public Double amount;
 	
-	private AddTransaction() {
+	private AddTransaction(Controller c) {
 		setAlwaysOnTop(true);
 		
 		JPanel panel = new JPanel();
@@ -86,6 +97,9 @@ public class AddTransaction extends JFrame{
 		JLabel lblDate = new JLabel("Date:");
 		
 		textField_2 = new JTextField(8);
+		textField_2.setText("dd/mm/yy");
+		textField_2.setToolTipText("");
+		
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
 		gl_panel_4.setHorizontalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
@@ -135,6 +149,35 @@ public class AddTransaction extends JFrame{
 		panel_1.add(comboBox);
 		
 		JButton btnNewButton = new JButton("Submit");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				 type = comboBox.getSelectedItem().toString();
+				 name = textField.getText();
+				 category = textField_1.getText();
+				String d= textField_2.getText();
+				 amount= Double.parseDouble(textField_3.getText().toString());
+			
+				int day,month,year;
+				day = Integer.parseInt(String.valueOf(d.charAt(0))) * 10 + Integer.parseInt(String.valueOf(d.charAt(1)));
+			
+				month = Integer.parseInt(String.valueOf(d.charAt(3))) * 10 + Integer.parseInt(String.valueOf(d.charAt(4)));
+				year = Integer.parseInt(String.valueOf(d.charAt(6))) * 10 + Integer.parseInt(String.valueOf(d.charAt(7)));
+				 date = new Date(year,month,day);
+				
+				System.out.println(date.getDate());
+				
+				c.addNewRecord(name,category,date,amount,type);
+				c.updateDashboard();
+				setVisible(false);
+				//clear form
+				textField.setText("");
+				textField_1.setText("");
+				textField_2.setText("dd/mm/yy");
+				textField_3.setText("");
+				
+			}
+		});
 		btnNewButton.setBounds(155, 203, 89, 23);
 		panel_1.add(btnNewButton);
 		
@@ -144,9 +187,9 @@ public class AddTransaction extends JFrame{
 
 	}
 	
-	public static AddTransaction getAddTransaction() {
+	public static AddTransaction getAddTransaction(Controller c) {
 		if(t == null) {
-			t = new AddTransaction();
+			t = new AddTransaction(c);
 		}
 		return t;
 	}

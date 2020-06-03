@@ -131,7 +131,7 @@ public class Signin {
 		lblRegisterNow.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				controller.goToScreen("register");
+				controller.goToScreen("register",null);
 			}
 		});
 		lblRegisterNow.setFont(new Font("Tahoma", Font.PLAIN, 10));

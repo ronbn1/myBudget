@@ -5,6 +5,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import controller.Controller;
+import model.User;
+
 import javax.swing.border.EmptyBorder;
 import view.Signin;
 
@@ -25,25 +27,24 @@ public class View {
 		mainFrame.setTitle("MyBudget");
 		mainFrame.setSize(600, 600);
 		mainFrame.setVisible(true);
-		setScreen("register");
-		//dashboardView = new Dashboard(mainFrame, controller);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setScreen("register",null);
+		// dashboardView = new Dashboard(mainFrame, controller);
 	}
 
 	public void signInFail() {
 
 	}
-	
-public AddTransaction viewAddTransaction() {
-	 return AddTransaction.getAddTransaction();
-	 
 
-}
+	public AddTransaction viewAddTransaction(Controller c) {
+		return AddTransaction.getAddTransaction(c);
 
-	public void setScreen(String screen) {
+	}
+
+	public void setScreen(String screen, User user ) {
 		switch (screen) {
 		case "register":
 			registerView = new Register(mainFrame, controller);
-			signinView.removeScreen();
 			if (signinView != null) {
 
 				signinView.removeScreen();
@@ -56,10 +57,30 @@ public AddTransaction viewAddTransaction() {
 				registerView.removeScreen();
 			}
 			break;
+		case "dashboard":
+			dashboardView =  Dashboard.getDashboard(mainFrame, controller,user);
+			if (registerView != null)
+				registerView.removeScreen();
+			if (signinView != null)
+				signinView.removeScreen();
+			break;
+
 		}
+
 	}
 
 	public void signInSuccess() {
 		signinView.removeScreen();
+	}
+
+	public void displayDashboard(User user) {
+
+		setScreen("dashboard",user);
+		
+
+	}
+	
+	public JFrame getMainFrame() {
+		return mainFrame;
 	}
 }
