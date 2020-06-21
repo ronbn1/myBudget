@@ -28,9 +28,8 @@ public class Budget  implements Serializable{
 	  add new expense record to user's budget
 	 
 	 */
-	public void add_Expense(String name, double amount, Currency currency, Date date, Category category) {
-		Expenses e = new Expenses(name, amount, currency, date, category);
-		expensesList.add(e);
+	public void add_Expense(Record e) {
+		expensesList.add((Expenses) e);
 		currentBalance -= e.getAmount();
 	}
 
@@ -45,10 +44,10 @@ public class Budget  implements Serializable{
 	  add new income record to user's budget
 	 
 	 */
-	public void add_Income(String name, double amount, Currency currency, Date date, Category category) {
-		Income e = new Income(name, amount, currency, date, category);
+	public void add_Income(Record e) {
+		
 
-		incomeList.add(e);
+		incomeList.add((Income) e);
 
 		currentBalance += e.getAmount();
 
@@ -147,23 +146,29 @@ public class Budget  implements Serializable{
 	
 
 	/*
-	  add new record by type
-	 
+	 * 
+	 * 
+	 * add new record via Factory design pattern (RecodFactory)
 	 */
 	public void addRecord(String name, String c, Date date, double amount, String type) {
 		Currency currency = new Currency("NIS");
 		Category category = new Category(c);
 
 		// renew date
-
-		if (type == "Income")
-			add_Income(name, amount, currency, date, category);
-		else if (type == "Expense")
-			add_Expense(name, amount, currency, date, category);
-		else if (type == "Recurring Income")
-			add_RecurringIncome(name, amount, currency, date, category, date);
-		else if (type == "Recurring Expense")
-			add_RecurringExpense(name, amount, currency, date, category, date);
+		Record r = RecordFactory.getRecord(type, name, amount, currency, date, category);
+		
+		if(r instanceof Income)
+			add_Income(r);
+		else if (r instanceof Expenses)
+			add_Expense(r);
+			
+		
+		
+		/*
+		 * add recurring records
+		 * */
+		
+		
 	}
 	
 	
@@ -175,9 +180,9 @@ public class Budget  implements Serializable{
 	public void removeRecord(int index, int month, int year) {
 
 		ArrayList<Record> allRecords = new ArrayList<Record>();
-		System.out.println(month +" asdaskl "+ year);
+		
 		allRecords =(ArrayList<Record>) getAllRecordsByMonth(month, year-1900);
-		System.out.println(allRecords.size());
+		
 		Record toRemove =(Record) allRecords.get(index-1);
 		
 		if(toRemove instanceof Income ) {

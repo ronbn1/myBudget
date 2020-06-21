@@ -36,12 +36,15 @@ public class UnitTests {
 		app.setUser(user);
 		app.save();
 		model = new Model();
-		user.getBudget().add_Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-		user.getBudget().add_Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-		user.getBudget().add_Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-		user.getBudget().add_Income("test4", 12, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+//		user.getBudget().add_Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+//		user.getBudget().add_Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+//		user.getBudget().add_Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+//		user.getBudget().add_Income("test4", 12, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
 
-		
+		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Income");
+		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100.2, "Income");
+		user.getBudget().addRecord("test3", "salary", new Date(120,05,01), 0, "Income");
+		user.getBudget().addRecord("test4", "salary", new Date(120,05,01), 12, "Income");
 		
 	}
 	
@@ -87,9 +90,9 @@ public class UnitTests {
 	public void testRemoveTransaction() {
 		List<Income> incomes = new ArrayList<>();
 		
-		user.getBudget().add_Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-		user.getBudget().add_Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-		user.getBudget().add_Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Income");
+		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100.2, "Income");
+		user.getBudget().addRecord("test3", "salary", new Date(120,05,01), 0, "Income");
 		
 		model.removeTransByIndex(1, 5, 2020);
 		int i =0;
@@ -112,10 +115,10 @@ public class UnitTests {
 	
 	@Test
 	public void testRecordsByMonth() {
-		user.getBudget().add_Income("test1", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary"));
-		user.getBudget().add_Income("test2", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary"));
-		user.getBudget().add_Expense("test3", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary"));
-		user.getBudget().add_Expense("test4", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary"));
+		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Income");
+		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100, "Income");
+		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Expense");
+		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100, "Expense");
 		List<Record> actualRecords = user.getBudget().getAllRecordsByMonth(6, 120);
 		List<Record> expectedRecords = new ArrayList<>();
 		expectedRecords.add(new Income("test1", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
