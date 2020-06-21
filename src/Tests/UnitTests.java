@@ -115,10 +115,10 @@ public class UnitTests {
 	
 	@Test
 	public void testRecordsByMonth() {
-		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Income");
-		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100, "Income");
-		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Expense");
-		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100, "Expense");
+		user.getBudget().addRecord("test1", "salary", new Date(120,06,01), 100, "Income");
+		user.getBudget().addRecord("test2", "salary", new Date(120,06,01), 100, "Income");
+		user.getBudget().addRecord("test3", "salary", new Date(120,06,01), 100, "Expense");
+		user.getBudget().addRecord("test4", "salary", new Date(120,06,01), 100, "Expense");
 		List<Record> actualRecords = user.getBudget().getAllRecordsByMonth(6, 120);
 		List<Record> expectedRecords = new ArrayList<>();
 		expectedRecords.add(new Income("test1", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
@@ -146,10 +146,12 @@ public class UnitTests {
 	@Test
 	public void testCurrentBalance() {
 		assertEquals(212.2, user.getBudget().getCurrentBalance(),0);
-		user.getBudget().add_Expense("test5", 50.2, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+		user.getBudget().addRecord("test5", "salary", new Date(120,05,01), 50.2, "Expense");
 		assertEquals(162.0, user.getBudget().getCurrentBalance(),0);
-		user.getBudget().add_Expense("test6", 200, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
+		user.getBudget().addRecord("test6", "salary", new Date(120,05,01), 200, "Expense");
 		assertEquals(-38, user.getBudget().getCurrentBalance(),0);
+		
+	
 	}
 	
 	/*
