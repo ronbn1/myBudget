@@ -1,9 +1,14 @@
 package model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public abstract class  Record {
+public abstract class  Record  implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private double amount;
 	private Currency currency;
@@ -44,6 +49,7 @@ public abstract class  Record {
 	}
 
 	public Date getDate() {
+	
 		return date;
 	}
 

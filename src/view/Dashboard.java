@@ -7,6 +7,7 @@ import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.synth.SynthStyle;
 
 import controller.Controller;
 import model.*;
@@ -20,16 +21,25 @@ import javax.swing.table.TableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+
+
+/*
+  Main window -- user Dashboard
+ 
+ */
 public class Dashboard extends View {
 	private JPanel mainPanel;
 	private Controller controller;
 	private JTable table;
 	private User user = null;
+	private JLabel lblUsername;
 	private JLabel lblCurrentBudget;
 	public static Dashboard dashboard = null;
 	private DefaultTableModel m;
 	private int currentMonth;
-	JLabel lblMonth ;
+	private int currentYear;
+	private JLabel lblMonth;
+	private JLabel lblYear;
 	private ArrayList<String> months = new ArrayList<String>(
 			Arrays.asList("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"));
 
@@ -41,7 +51,7 @@ public class Dashboard extends View {
 		mainPanel.setLayout(null);
 		mainPanel.setSize(500, 350);
 		this.user = user;
-		System.out.println(user.getFirstName());
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		mainPanel.setSize(screenSize.width, screenSize.height);
 		// JPanel recordPanel ;
@@ -70,7 +80,7 @@ public class Dashboard extends View {
 			}
 		});
 		lblBalance.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblBalance.setForeground(new Color(53, 173, 202));
+		lblBalance.setForeground(new Color(127, 255, 212));
 		lblBalance.setBounds(1352, 14, 122, 17);
 		panel.add(lblBalance);
 
@@ -80,10 +90,10 @@ public class Dashboard extends View {
 		lblHello.setBounds(405, 8, 36, 23);
 		panel.add(lblHello);
 
-		JLabel lblUsername = new JLabel(user.getFirstName());
+		 lblUsername = new JLabel(user.getFirstName());
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblUsername.setForeground(new Color(53, 173, 202));
-		lblUsername.setBounds(442, 12, 46, 14);
+		lblUsername.setBounds(442, 12, 79, 14);
 		panel.add(lblUsername);
 
 		JLabel lblMybudget = new JLabel("MyBudget");
@@ -91,6 +101,34 @@ public class Dashboard extends View {
 		lblMybudget.setFont(new Font("SansSerif", Font.BOLD, 22));
 		lblMybudget.setBounds(856, 6, 127, 28);
 		panel.add(lblMybudget);
+
+		JLabel lblDeleteTransaction = new JLabel("Delete Transaction");
+		lblDeleteTransaction.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				DeleteTransaction d = viewDeleteTransaction(controller);
+				d.setLocation(700, 300);
+				d.setSize(400, 320);
+				d.setVisible(true);
+
+			}
+		});
+		lblDeleteTransaction.setForeground(new Color(255, 192, 203));
+		lblDeleteTransaction.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblDeleteTransaction.setBounds(1169, 14, 168, 17);
+		panel.add(lblDeleteTransaction);
+		
+		JLabel logOut = new JLabel("LOGOUT");
+		logOut.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				controller.logOut();
+			}
+		});
+		logOut.setIcon(new ImageIcon("C:\\Users\\rbena\\Desktop\\MyBudget\\icons8-exit-16.png"));
+		logOut.setBounds(480, 5, 96, 30);
+		logOut.setForeground(new Color(255, 192, 203));
+		panel.add(logOut);
 
 //		DefaultTableModel model = new DefaultTableModel(); 
 //		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -123,24 +161,57 @@ public class Dashboard extends View {
 		lblCurrentBudget.setBounds(1335, 27, 124, 40);
 		panel_1.add(lblCurrentBudget);
 		int month = new Date().getMonth();
-		currentMonth = month-1;
-		 lblMonth = new JLabel(months.get(month-1));
+
+		currentMonth = month - 1;
+		currentYear = new Date().getYear() + 1900;
+
+		lblMonth = new JLabel("MAY");
 		lblMonth.setForeground(new Color(255, 255, 255));
 		lblMonth.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		lblMonth.setBounds(449, 27, 180, 40);
+		lblMonth.setBounds(449, 27, 66, 40);
 		panel_1.add(lblMonth);
 
 		JLabel label = new JLabel("<");
+		label.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				currentYear = currentMonth == 0 ? currentYear - 1 : currentYear;
+				currentMonth = currentMonth == 0 ? 12 : currentMonth;
+				currentMonth = (currentMonth - 1);
+				controller.updateDashboard();
+			}
+		});
 		label.setForeground(Color.WHITE);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		label.setBounds(409, 27, 40, 40);
 		panel_1.add(label);
 
 		JLabel label_1 = new JLabel(">");
+		label_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				currentYear = currentMonth == 11 ? currentYear + 1 : currentYear;
+				currentMonth = (currentMonth + 1) % 12;
+
+				controller.updateDashboard();
+			}
+		});
 		label_1.setForeground(Color.WHITE);
 		label_1.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		label_1.setBounds(589, 27, 40, 40);
 		panel_1.add(label_1);
+
+		lblYear = new JLabel(String.valueOf(currentYear));
+		lblYear.setForeground(Color.WHITE);
+		lblYear.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		lblYear.setBounds(525, 27, 66, 40);
+		panel_1.add(lblYear);
+
+		JLabel label_3 = new JLabel(",");
+		label_3.setForeground(Color.WHITE);
+		label_3.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		label_3.setBounds(503, 27, 24, 40);
+		panel_1.add(label_3);
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(399, 134, 1070, 927);
@@ -159,10 +230,12 @@ public class Dashboard extends View {
 //		));
 
 		JTable table = new JTable();
-		table.setShowVerticalLines(false);
-		table.setRowSelectionAllowed(false);
 		table.setEnabled(false);
-		m = new DefaultTableModel(new Object[][] {}, new String[] { "Name", "Category", "Date", "Amount" });
+		table.setCellSelectionEnabled(true);
+		table.setColumnSelectionAllowed(true);
+		table.setShowVerticalLines(false);
+		m = new DefaultTableModel(new Object[][] {}, new String[] { "Trans No", "Name", "Category", "Date", "Amount" });
+
 		table.setModel(m);
 
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -182,7 +255,7 @@ public class Dashboard extends View {
 		table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 		table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
 		table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-
+		table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setEnabled(false);
 		scrollPane.setViewportBorder(null);
@@ -193,44 +266,76 @@ public class Dashboard extends View {
 	}
 
 	public void updateView(Budget b) {
-	
-		lblCurrentBudget.setText(String.valueOf(b.getCurrentBalance()));
+		if (b.getCurrentBalance() >= 0) {
+
+			lblCurrentBudget.setText(String.valueOf(b.getCurrentBalance()));
+			lblCurrentBudget.setForeground(new Color(34, 139, 34));
+		} else {
+			lblCurrentBudget.setText(String.valueOf(b.getCurrentBalance()));
+			lblCurrentBudget.setForeground(Color.red);
+
+		}
+
 //		ArrayList<Record> income = new ArrayList<Record>();
 //		ArrayList<Record> expenses = new ArrayList<Record>();
 //		income = (ArrayList<Record>) b.get_Income_Inperiod(month);
 //		expenses= (ArrayList<Record>) b.get_Income_Inperiod(month);
+		 lblUsername.setText(user.getFirstName());
+		 
+		lblMonth.setText(months.get((currentMonth) % 12));
+		lblYear.setText(String.valueOf(currentYear));
 
-		ArrayList<Record> allRecords = (ArrayList<Record>)b.getAllRecordsByMonth(currentMonth);
-
+		ArrayList<Record> allRecords = (ArrayList<Record>) b.getAllRecordsByMonth(currentMonth, currentYear - 1900);
 		int size = m.getRowCount();
 
 		for (int i = 0; i < size; i++) {
-			m.removeRow(i);
+			m.removeRow(0);
 		}
-
 
 		for (Record cur : allRecords) {
-			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth()) + "/"
-					+ String.valueOf(cur.getDate().getYear());
-//			System.out.println(cur.getDate().getDate());
-//			System.out.println(cur.getDate().getMonth());
-//			System.out.println(cur.getDate().getYear());
-			m.addRow(new Object[] { cur.getName(), cur.getCategory().getType(), date, cur.getAmount() });
+			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth()+1) + "/"
+					+ String.valueOf(cur.getDate().getYear() + 1900);
+			if (cur instanceof Income || cur instanceof RecurringIncome) {
+
+				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
+						cur.getAmount() });
+
+			} else {
+				m.addRow(new Object[] {allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date, -cur.getAmount() });
+
+			}
 		}
 
-		// m.addRow(new Object[]{"123", "44545","fdgd","123123"});
+		
 
+	}
+
+	public void changeMonth(String act) {
+		if (act == "next") {
+			currentMonth = currentMonth + 1 % 12;
+			lblMonth.setText(months.get(currentMonth - 1));
+
+		}
+
+	}
+
+	public int getCurrentYear() {
+		return currentYear;
+	}
+
+	public int getCurrentMonth() {
+		return currentMonth;
+	}
+	public void removeScreen() {
+		mainPanel.setVisible(false);
+	}
+	public void showScreen() {
+		mainPanel.setVisible(true);
 	}
 	
-	public void changeMonth(String act) {
-		if(act == "next") {
-			currentMonth= currentMonth + 1 % 12;
-			lblMonth.setText(months.get(currentMonth-1));
-			
-		}
-		
+	public void setUser(User user) {
+		this.user = user;
 	}
-
 	public static Dashboard getDashboard(JFrame mainFrame, Controller controller, User user) {
 		if (dashboard == null) {
 			dashboard = new Dashboard(mainFrame, controller, user);

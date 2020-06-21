@@ -16,6 +16,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -25,6 +26,12 @@ import java.awt.FlowLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ImageIcon;
+
+
+/*
+ * Register window 
+ * */
 
 public class Register {
 	private JPanel mainPanel; 
@@ -34,17 +41,18 @@ public class Register {
 		
 		this.controller = controller;
 		mainPanel = new JPanel();
+		mainPanel.setForeground(Color.WHITE);
 		mainPanel.setBackground(SystemColor.window);
 		mainFrame.getContentPane().add(mainPanel);
 		mainPanel.setLayout(null);
 		mainPanel.setSize(500,350);
 		 JLabel loginText;
-		JPanel signinPanel = new JPanel();
-		signinPanel.setSize(500, 304);
-		signinPanel.setBackground(SystemColor.window);
-		signinPanel.setBorder(new LineBorder(Color.black));
-		signinPanel.setPreferredSize(new Dimension(500, 200));
-		signinPanel.setLocation(new Point(0, 0));
+		JPanel registerPanel = new JPanel();
+		registerPanel.setSize(500, 304);
+		registerPanel.setBackground(SystemColor.window);
+		registerPanel.setBorder(new LineBorder(Color.black));
+		registerPanel.setPreferredSize(new Dimension(500, 200));
+		registerPanel.setLocation(new Point(700, 350));
 		
 		JLabel label = new JLabel("");
 		
@@ -96,14 +104,14 @@ public class Register {
 		namePasswordSection.add(passwordSection);
 		JLabel passwordText = new JLabel("Password: ");
 		passwordText.setBackground(SystemColor.window);
-		JTextField passwordField = new JTextField(8);
+		JPasswordField passwordField = new JPasswordField(8);
 		passwordSection.add(passwordText);
 		passwordSection.add(passwordField);
 		
 		JLabel label_3 = new JLabel("");
 		
 		
-		mainPanel.add(signinPanel);
+		mainPanel.add(registerPanel);
 		
 		JLabel label_4 = new JLabel("");
 		
@@ -114,49 +122,59 @@ public class Register {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				
+				boolean isSeccess = controller.registerValid(nameField.getText(), firstNameField.getText(), lastNameField.getText(), passwordField.getText());
+				if(isSeccess) {
+					//send the data to the controller
+					controller.addNewUser(nameField.getText(),firstNameField.getText(),lastNameField.getText(),passwordField.getText());
+					//controller.goToScreen("dashboard");
+					try {
+						controller.save();
+						
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				
-				//send the data to the controller
-				controller.addNewUser(nameField.getText(),firstNameField.getText(),lastNameField.getText(),passwordField.getText());
-				//controller.goToScreen("dashboard");
 			}
 		});
 		panel.add(loginBtn);
-		GroupLayout gl_signinPanel = new GroupLayout(signinPanel);
-		gl_signinPanel.setHorizontalGroup(
-			gl_signinPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_signinPanel.createSequentialGroup()
-					.addGroup(gl_signinPanel.createParallelGroup(Alignment.LEADING)
+		GroupLayout gl_registerPanel = new GroupLayout(registerPanel);
+		gl_registerPanel.setHorizontalGroup(
+			gl_registerPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_registerPanel.createSequentialGroup()
+					.addGroup(gl_registerPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(label, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_signinPanel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_registerPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
 						.addComponent(namePasswordSection, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_signinPanel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_registerPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 166, GroupLayout.PREFERRED_SIZE)))
 		);
-		gl_signinPanel.setVerticalGroup(
-			gl_signinPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_signinPanel.createSequentialGroup()
-					.addGroup(gl_signinPanel.createParallelGroup(Alignment.LEADING)
+		gl_registerPanel.setVerticalGroup(
+			gl_registerPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_registerPanel.createSequentialGroup()
+					.addGroup(gl_registerPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(label, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label_1, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_signinPanel.createSequentialGroup()
+						.addGroup(gl_registerPanel.createSequentialGroup()
 							.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
 							.addComponent(namePasswordSection, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)))
-					.addGroup(gl_signinPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_signinPanel.createSequentialGroup()
+					.addGroup(gl_registerPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_registerPanel.createSequentialGroup()
 							.addGap(18)
-							.addGroup(gl_signinPanel.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_registerPanel.createParallelGroup(Alignment.LEADING)
 								.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
 								.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
 							.addComponent(label_4, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_signinPanel.createSequentialGroup()
+						.addGroup(gl_registerPanel.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE))))
 		);
@@ -175,11 +193,10 @@ public class Register {
 		lblSignIn.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblSignIn.setForeground(Color.BLUE);
 		panel.add(lblSignIn);
-		signinPanel.setLayout(gl_signinPanel);
+		registerPanel.setLayout(gl_registerPanel);
 	}
 	public void removeScreen() {
 		mainPanel.setVisible(false);
 		
 	}
-
 }

@@ -1,6 +1,10 @@
 package model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	private String userName;
 	private String firstName;
 	private String lastName;
@@ -11,9 +15,7 @@ public class User {
 		return budget;
 	}
 
-	public void setBudget(Budget budget) {
-		this.budget = budget;
-	}
+
 
 	public User(String userName, String firstName, String lastName, String password) {
 		this.userName = userName;
@@ -23,9 +25,13 @@ public class User {
 		this.budget = new Budget();
 	}
 
+	
 	public String getUserName() {
 		return userName;
 	}
+	public void setBudget(Budget budget) {
+		this.budget = budget;
+	} 
 
 	public void setUserName(String userName) {
 		this.userName = userName;

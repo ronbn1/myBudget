@@ -12,6 +12,11 @@ import controller.Controller;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+
+
+/*
+ * Signin window
+ * */
 public class Signin {
 	private JPanel mainPanel; 
 	private Controller controller;
@@ -28,7 +33,7 @@ public class Signin {
 		signinPanel.setBackground(SystemColor.window);
 		signinPanel.setBorder(new LineBorder(Color.black));
 		signinPanel.setPreferredSize(new Dimension(500, 200));
-		signinPanel.setLocation(new Point(0, 0));
+		signinPanel.setLocation(new Point(700, 350));
 		
 		JLabel label = new JLabel("");
 		
@@ -69,7 +74,7 @@ public class Signin {
 		namePasswordSection.add(passwordSection, gbc_passwordSection);
 		JLabel passwordText = new JLabel("Password: ");
 		passwordText.setBackground(SystemColor.window);
-		JTextField passwordField = new JTextField(8);
+		JPasswordField passwordField = new JPasswordField(8);
 		passwordSection.add(passwordText);
 		passwordSection.add(passwordField);
 		
@@ -88,7 +93,22 @@ public class Signin {
 			public void mouseClicked(MouseEvent arg0) {
 				
 				//send the data to the controller
-				controller.setLoginParam(nameField.getText(),passwordField.getText());
+				//controller.setLoginParam(nameField.getText(),passwordField.getText());
+				try {
+					boolean isSeccess = controller.load(nameField.getText(),passwordField.getText());
+					if(isSeccess) {
+						controller.setLoginParam();
+						controller.updateDashboard();
+					}
+					else {
+						//pop up user name or password are invalid
+						controller.showMessage("Username or password are invalid!");
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 			}
 		});
 		GroupLayout gl_signinPanel = new GroupLayout(signinPanel);
