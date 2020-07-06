@@ -3,6 +3,8 @@ package view;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.swing.*;
@@ -21,8 +23,6 @@ import javax.swing.table.TableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-
-
 /*
   Main window -- user Dashboard
  
@@ -40,9 +40,11 @@ public class Dashboard extends View {
 	private int currentYear;
 	private JLabel lblMonth;
 	private JLabel lblYear;
+	private static String prevType = "";
 	private ArrayList<String> months = new ArrayList<String>(
 			Arrays.asList("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"));
-
+	private ArrayList<Record> allRecords = null;
+	private static int clickCount = 0;
 	private Dashboard(JFrame mainFrame, Controller controller, User user) {
 		this.controller = controller;
 		mainPanel = new JPanel();
@@ -51,17 +53,9 @@ public class Dashboard extends View {
 		mainPanel.setLayout(null);
 		mainPanel.setSize(500, 350);
 		this.user = user;
-		
+
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		mainPanel.setSize(screenSize.width, screenSize.height);
-		// JPanel recordPanel ;
-//		recordPanel = new JPanel();
-//		recordPanel.setLocation(700, 300);
-//		recordPanel.setSize(400,200);
-//		recordPanel.setBackground(Color.red);
-//		
-//		mainPanel.add(recordPanel);
-//		recordPanel.setLayout(null);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(33, 64, 76));
@@ -90,7 +84,7 @@ public class Dashboard extends View {
 		lblHello.setBounds(405, 8, 36, 23);
 		panel.add(lblHello);
 
-		 lblUsername = new JLabel(user.getFirstName());
+		lblUsername = new JLabel(user.getFirstName());
 		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblUsername.setForeground(new Color(53, 173, 202));
 		lblUsername.setBounds(442, 12, 79, 14);
@@ -102,22 +96,6 @@ public class Dashboard extends View {
 		lblMybudget.setBounds(856, 6, 127, 28);
 		panel.add(lblMybudget);
 
-		JLabel lblDeleteTransaction = new JLabel("Delete Transaction");
-		lblDeleteTransaction.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				DeleteTransaction d = viewDeleteTransaction(controller);
-				d.setLocation(700, 300);
-				d.setSize(400, 320);
-				d.setVisible(true);
-
-			}
-		});
-		lblDeleteTransaction.setForeground(new Color(255, 192, 203));
-		lblDeleteTransaction.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblDeleteTransaction.setBounds(1169, 14, 168, 17);
-		panel.add(lblDeleteTransaction);
-		
 		JLabel logOut = new JLabel("LOGOUT");
 		logOut.addMouseListener(new MouseAdapter() {
 			@Override
@@ -162,10 +140,10 @@ public class Dashboard extends View {
 		panel_1.add(lblCurrentBudget);
 		int month = new Date().getMonth();
 
-		currentMonth = month - 1;
+		currentMonth = month ;
 		currentYear = new Date().getYear() + 1900;
 
-		lblMonth = new JLabel("MAY");
+		lblMonth = new JLabel(months.get(currentMonth));
 		lblMonth.setForeground(new Color(255, 255, 255));
 		lblMonth.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		lblMonth.setBounds(449, 27, 66, 40);
@@ -196,6 +174,7 @@ public class Dashboard extends View {
 				controller.updateDashboard();
 			}
 		});
+
 		label_1.setForeground(Color.WHITE);
 		label_1.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		label_1.setBounds(589, 27, 40, 40);
@@ -231,12 +210,46 @@ public class Dashboard extends View {
 
 		JTable table = new JTable();
 		table.setEnabled(false);
-		table.setCellSelectionEnabled(true);
+		table.setFillsViewportHeight(true);
+		table.setSurrendersFocusOnKeystroke(true);
+
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setColumnSelectionAllowed(true);
 		table.setShowVerticalLines(false);
-		m = new DefaultTableModel(new Object[][] {}, new String[] { "Trans No", "Name", "Category", "Date", "Amount" });
-
+		m = new DefaultTableModel(new Object[][] {},
+				new String[] { "Trans No", "Name", "Category", "Date", "Amount", "" });
 		table.setModel(m);
+		table.getColumnModel().getColumn(0).setPreferredWidth(300);
+		table.getColumnModel().getColumn(1).setPreferredWidth(300);
+		table.getColumnModel().getColumn(2).setPreferredWidth(300);
+		table.getColumnModel().getColumn(3).setPreferredWidth(300);
+		table.getColumnModel().getColumn(4).setPreferredWidth(300);
+		table.getColumnModel().getColumn(5).setPreferredWidth(100);
+
+		table.getTableHeader().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int col = table.columnAtPoint(e.getPoint());
+				if (col == 0 || col == 5)
+					return;
+				String[] type = { "name", "category", "date", "amount" };
+				//updateView(user.getBudget());
+				updateView(user.getBudget(), type[col - 1]);
+				clickCount++;
+			}
+		});
+
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int col = table.columnAtPoint(e.getPoint());
+				int row = table.rowAtPoint(e.getPoint());
+
+				if (col != 5)
+					return;
+				controller.removeTransByIndex(allRecords.get(row).getId());
+			}
+		});
 
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -256,6 +269,8 @@ public class Dashboard extends View {
 		table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
 		table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
 		table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+		table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setEnabled(false);
 		scrollPane.setViewportBorder(null);
@@ -265,7 +280,55 @@ public class Dashboard extends View {
 
 	}
 
+	public void updateView(Budget b, String type) {
+		
+		//allRecords = (ArrayList<Record>) b.getAllRecordsByMonth(currentMonth, currentYear - 1900);
+		int size = m.getRowCount();
+		if ( prevType.compareTo(type) != 0) {
+			clickCount=0;
+		}
+		for (int i = 0; i < size; i++) {
+			m.removeRow(0);
+		}
+		
+			if (type.compareTo("name") == 0)
+				Collections.sort(allRecords, Comparator.comparing(Record::getName));
+			else if (type.compareTo("category") == 0)
+				Collections.sort(allRecords, Comparator.comparing(Record::getCategoryType));
+			else if (type.compareTo("date") == 0)
+				Collections.sort(allRecords, Comparator.comparing(Record::getDate));
+			else if (type.compareTo("amount") == 0) {
+				Collections.sort(allRecords, Comparator.comparing(Record::getAmount));
+			
+
+		}
+			if (clickCount%2==1 && prevType.compareTo(type) == 0) {
+				Collections.reverse(allRecords);
+				System.out.println(prevType);
+				System.out.println(type);
+				
+		}
+		for (Record cur : allRecords) {
+			System.out.println(cur.getName());
+			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth() + 1)
+					+ "/" + String.valueOf(cur.getDate().getYear() + 1900);
+			if (cur instanceof Income || cur instanceof RecurringIncome) {
+
+				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
+						cur.getAmount(), "X" });
+
+			} else {
+				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
+						String.valueOf(cur.getAmount()), "X" });
+
+			}
+		}
+		
+		prevType = type;
+	}
+
 	public void updateView(Budget b) {
+
 		if (b.getCurrentBalance() >= 0) {
 
 			lblCurrentBudget.setText(String.valueOf(b.getCurrentBalance()));
@@ -276,16 +339,13 @@ public class Dashboard extends View {
 
 		}
 
-//		ArrayList<Record> income = new ArrayList<Record>();
-//		ArrayList<Record> expenses = new ArrayList<Record>();
-//		income = (ArrayList<Record>) b.get_Income_Inperiod(month);
-//		expenses= (ArrayList<Record>) b.get_Income_Inperiod(month);
-		 lblUsername.setText(user.getFirstName());
-		 
+
+		lblUsername.setText(user.getFirstName());
+
 		lblMonth.setText(months.get((currentMonth) % 12));
 		lblYear.setText(String.valueOf(currentYear));
 
-		ArrayList<Record> allRecords = (ArrayList<Record>) b.getAllRecordsByMonth(currentMonth, currentYear - 1900);
+		allRecords = (ArrayList<Record>) b.getAllRecordsByMonth(currentMonth, currentYear - 1900);
 		int size = m.getRowCount();
 
 		for (int i = 0; i < size; i++) {
@@ -293,20 +353,19 @@ public class Dashboard extends View {
 		}
 
 		for (Record cur : allRecords) {
-			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth()+1) + "/"
-					+ String.valueOf(cur.getDate().getYear() + 1900);
+			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth() + 1)
+					+ "/" + String.valueOf(cur.getDate().getYear() + 1900);
 			if (cur instanceof Income || cur instanceof RecurringIncome) {
 
 				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
-						cur.getAmount() });
+						cur.getAmount(), "X" });
 
 			} else {
-				m.addRow(new Object[] {allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date, -cur.getAmount() });
+				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
+						cur.getAmount(), "X" });
 
 			}
 		}
-
-		
 
 	}
 
@@ -326,16 +385,19 @@ public class Dashboard extends View {
 	public int getCurrentMonth() {
 		return currentMonth;
 	}
+
 	public void removeScreen() {
 		mainPanel.setVisible(false);
 	}
+
 	public void showScreen() {
 		mainPanel.setVisible(true);
 	}
-	
+
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 	public static Dashboard getDashboard(JFrame mainFrame, Controller controller, User user) {
 		if (dashboard == null) {
 			dashboard = new Dashboard(mainFrame, controller, user);

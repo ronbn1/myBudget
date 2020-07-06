@@ -89,12 +89,12 @@ public class UnitTests {
 	@Test
 	public void testRemoveTransaction() {
 		List<Income> incomes = new ArrayList<>();
+		incomes.add(new Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		incomes.add(new Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		incomes.add(new Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
 		
-		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Income");
-		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100.2, "Income");
-		user.getBudget().addRecord("test3", "salary", new Date(120,05,01), 0, "Income");
-		
-		model.removeTransByIndex(1, 5, 2020);
+		int idToDelete = Record.lastIndex()-3;
+		model.removeTransByIndex(idToDelete, 5, 2020);
 		int i =0;
 		for(Income cur : incomes) {
 			assertEquals(cur.getName(), user.getBudget().get_Income().get(i).getName());
@@ -117,16 +117,15 @@ public class UnitTests {
 	public void testRecordsByMonth() {
 		user.getBudget().addRecord("test1", "salary", new Date(120,06,01), 100, "Income");
 		user.getBudget().addRecord("test2", "salary", new Date(120,06,01), 100, "Income");
-		user.getBudget().addRecord("test3", "salary", new Date(120,06,01), 100, "Expense");
-		user.getBudget().addRecord("test4", "salary", new Date(120,06,01), 100, "Expense");
+		user.getBudget().addRecord("test3", "salary", new Date(120,06,01), -100, "Expense");
+		user.getBudget().addRecord("test4", "salary", new Date(120,06,01), -100, "Expense");
 		List<Record> actualRecords = user.getBudget().getAllRecordsByMonth(6, 120);
 		List<Record> expectedRecords = new ArrayList<>();
 		expectedRecords.add(new Income("test1", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
 		expectedRecords.add(new Income("test2", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
-		expectedRecords.add(new Expenses("test3", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
-		expectedRecords.add(new Expenses("test4", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
+		expectedRecords.add(new Expenses("test3", -100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
+		expectedRecords.add(new Expenses("test4", -100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
 		
-		model.removeTransByIndex(1, 6, 2020);
 		int i = expectedRecords.size()-1;
 		for(Record cur : expectedRecords) {
 			assertEquals(cur.getName(), actualRecords.get(i).getName());
@@ -192,16 +191,21 @@ public class UnitTests {
 		List<Expenses> expenses = new ArrayList<>();
 		expenses.add(new Expenses("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
 		expenses.add(new Expenses("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
-		expenses.add(new Expenses("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		expenses.add(new Expenses("test3", 5, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
 		expenses.add(new Expenses("test4", 12, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		
+		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Expense");
+		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100.2, "Expense");
+		user.getBudget().addRecord("test3", "salary", new Date(120,05,01), 5, "Expense");
+		user.getBudget().addRecord("test4", "salary", new Date(120,05,01), 12, "Expense");
 		
 		int i =0;
 		for(Expenses cur : expenses) {
-			assertEquals(cur.getName(), user.getBudget().get_Income().get(i).getName());
-			assertEquals(String.valueOf(cur.getAmount()), String.valueOf(user.getBudget().get_Income().get(i).getAmount()));
-			assertEquals(cur.getCategory().getType(), user.getBudget().get_Income().get(i).getCategory().getType());
-			assertEquals(cur.getCurrency().getType(), user.getBudget().get_Income().get(i).getCurrency().getType());
-			assertEquals(cur.getDate().toString(), user.getBudget().get_Income().get(i).getDate().toString());
+			assertEquals(cur.getName(), user.getBudget().get_expenses().get(i).getName());
+			assertEquals(String.valueOf(cur.getAmount()), String.valueOf(user.getBudget().get_expenses().get(i).getAmount()));
+			assertEquals(cur.getCategory().getType(), user.getBudget().get_expenses().get(i).getCategory().getType());
+			assertEquals(cur.getCurrency().getType(), user.getBudget().get_expenses().get(i).getCurrency().getType());
+			assertEquals(cur.getDate().toString(), user.getBudget().get_expenses().get(i).getDate().toString());
 			i++;
 		}
 	

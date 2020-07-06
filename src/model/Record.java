@@ -14,7 +14,8 @@ public abstract class  Record  implements Serializable{
 	private Currency currency;
 	private Date date;
 	private Category category;
-	
+	private static int count = 0;
+	private int id;
 	public Record(String name, double amount, Currency currency, Date date, Category category) {
 		super();
 		this.name = name;
@@ -22,8 +23,15 @@ public abstract class  Record  implements Serializable{
 		this.currency = currency;
 		this.date = date;
 		this.category = category;
+		id = count++;
 	}
 
+	public static int lastIndex() {
+		return count-1;
+	}
+	public int getId() {
+		return id;
+	}
 	public String getName() {
 		return name;
 	}
@@ -61,6 +69,10 @@ public abstract class  Record  implements Serializable{
 		return category;
 	}
 
+	public String getCategoryType() {
+		return category.getType();
+	}
+	
 	public void setCategory(Category category) {
 		this.category = category;
 	}

@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.*;
 
+import mybudget.MyBudget;
+
 public class Budget  implements Serializable{
 	/**
 	 * 
@@ -30,7 +32,7 @@ public class Budget  implements Serializable{
 	 */
 	public void add_Expense(Record e) {
 		expensesList.add((Expenses) e);
-		currentBalance -= e.getAmount();
+		currentBalance += e.getAmount();
 	}
 
 	public void add_RecurringExpense(String name, double amount, Currency currency, Date date, Category category,
@@ -183,16 +185,26 @@ public class Budget  implements Serializable{
 		
 		allRecords =(ArrayList<Record>) getAllRecordsByMonth(month, year-1900);
 		
-		Record toRemove =(Record) allRecords.get(index-1);
+		Record toRemove = null;
+		for(Record r : allRecords) {
+			if(r.getId() == index) toRemove=r;
+		}
 		
 		if(toRemove instanceof Income ) {
 			currentBalance-=toRemove.getAmount();
 			incomeList.remove(toRemove);
 		}
 		else {
-			currentBalance+=toRemove.getAmount();
+			currentBalance-=toRemove.getAmount();
 			expensesList.remove(toRemove);
 		}
-
+		
+		MyBudget m = MyBudget.getMyBudget();
+		try {
+			m.update();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
