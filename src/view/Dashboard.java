@@ -196,17 +196,7 @@ public class Dashboard extends View {
 		panel_2.setBounds(399, 134, 1070, 927);
 		mainPanel.add(panel_2);
 
-//		table_1 = new JTable();
-//		table_1.setModel(new DefaultTableModel(
-//			new Object[][] {
-//				{null, null, null, null, null},
-//				{null, null, null, null, null},
-//				{null, "", null, null, null},
-//			},
-//			new String[] {
-//				"Name", "Category", "New column", "New column", "New column"
-//			}
-//		));
+
 
 		JTable table = new JTable();
 		table.setEnabled(false);
@@ -312,7 +302,7 @@ public class Dashboard extends View {
 			System.out.println(cur.getName());
 			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth() + 1)
 					+ "/" + String.valueOf(cur.getDate().getYear() + 1900);
-			if (cur instanceof Income || cur instanceof RecurringIncome) {
+			if (cur instanceof Income ) {
 
 				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
 						cur.getAmount(), "X" });
@@ -355,7 +345,7 @@ public class Dashboard extends View {
 		for (Record cur : allRecords) {
 			String date = String.valueOf(cur.getDate().getDate()) + "/" + String.valueOf(cur.getDate().getMonth() + 1)
 					+ "/" + String.valueOf(cur.getDate().getYear() + 1900);
-			if (cur instanceof Income || cur instanceof RecurringIncome) {
+			if (cur instanceof Income ) {
 
 				m.addRow(new Object[] { allRecords.indexOf(cur) + 1, cur.getName(), cur.getCategory().getType(), date,
 						cur.getAmount(), "X" });
