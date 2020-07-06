@@ -10,15 +10,13 @@ public class Budget  implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<RecurringIncome> recurringIncomeList;
-	private List<RecurringExpenses> recurringExpensesList;
+
 	private List<Expenses> expensesList;
 	private List<Income> incomeList;
 	private double currentBalance;
 
 	public Budget() {
-		recurringIncomeList = new ArrayList<RecurringIncome>();
-		recurringExpensesList = new ArrayList<RecurringExpenses>();
+
 		expensesList = new ArrayList<Expenses>();
 		incomeList = new ArrayList<Income>();
 
@@ -35,12 +33,7 @@ public class Budget  implements Serializable{
 		currentBalance += e.getAmount();
 	}
 
-	public void add_RecurringExpense(String name, double amount, Currency currency, Date date, Category category,
-			Date renewDate) {
-		RecurringExpenses e = new RecurringExpenses(name, amount, currency, renewDate, category);
-		recurringExpensesList.add(e);
-	}
-	
+
 	
 	/*
 	  add new income record to user's budget
@@ -55,12 +48,7 @@ public class Budget  implements Serializable{
 
 	}
 
-	public void add_RecurringIncome(String name, double amount, Currency currency, Date date, Category category,
-			Date renewDate) {
-		RecurringIncome e = new RecurringIncome(name, amount, currency, renewDate, category);
-		recurringIncomeList.add(e);
 
-	}
 
 	public List<Income> get_Income() {
 
@@ -85,9 +73,7 @@ public class Budget  implements Serializable{
 				allRecords.add(cur);
 		}
 
-		for (RecurringIncome cur : recurringIncomeList) {
-			allRecords.add(cur);
-		}
+
 
 		return allRecords;
 	}
@@ -105,10 +91,7 @@ public class Budget  implements Serializable{
 				allRecords.add(cur);
 		}
 
-		for (RecurringExpenses cur : recurringExpensesList) {
 
-			allRecords.add(cur);
-		}
 
 		return allRecords;
 	}
@@ -164,11 +147,6 @@ public class Budget  implements Serializable{
 		else if (r instanceof Expenses)
 			add_Expense(r);
 			
-		
-		
-		/*
-		 * add recurring records
-		 * */
 		
 		
 	}

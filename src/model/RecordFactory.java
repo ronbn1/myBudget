@@ -1,7 +1,10 @@
 package model;
 
 import java.util.Date;
-
+/*
+ * use the factory design pattern to create the correct object (income / expense) with the same abstract class  
+ * 
+ * */
 public class RecordFactory {
 
 	public static Record getRecord (String type, String name, double amount, Currency currency, Date date, Category category) {
