@@ -45,6 +45,7 @@ public class Dashboard extends View {
 			Arrays.asList("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"));
 	private ArrayList<Record> allRecords = null;
 	private static int clickCount = 0;
+	
 	private Dashboard(JFrame mainFrame, Controller controller, User user) {
 		this.controller = controller;
 		mainPanel = new JPanel();
@@ -388,6 +389,14 @@ public class Dashboard extends View {
 		this.user = user;
 	}
 
+	public void switchToCurrentMonth() {
+		Date d = new Date();
+		currentMonth = d.getMonth();
+	}
+	public static Dashboard getDashboard() {
+		
+		return dashboard;
+	}
 	public static Dashboard getDashboard(JFrame mainFrame, Controller controller, User user) {
 		if (dashboard == null) {
 			dashboard = new Dashboard(mainFrame, controller, user);

@@ -133,6 +133,7 @@ public class Controller {
 	public void logOut() {
 		model.clearUser();
 		view.setScreen("sign in", null);
+		Dashboard.getDashboard().switchToCurrentMonth();
 	}
 
 	/*

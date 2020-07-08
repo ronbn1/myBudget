@@ -17,10 +17,10 @@ import model.Record;
 import model.User;
 import mybudget.MyBudget;
 
-public class UnitTests {
-	 MyBudget app ;	
-	 User user;	
-	Model model;
+public class BudgetUnitTests {
+	static MyBudget app ;	
+	static User user;	
+	static Model model;
 	
 	
 	/*
@@ -29,18 +29,13 @@ public class UnitTests {
 	 * save the user's data to mybudget.txt file
 	 * create model 
 	 * */
-	@Before
-	public void setUpMethod() {
+	@BeforeClass
+	public static void setUpMethod() {
 		app = MyBudget.getMyBudget();
-		user = new User("usernameTest","firstNameTest" , "lastNameTest" , "passwordTest" );
+		user = new User("usernameTest2","firstNameTest" , "lastNameTest" , "passwordTest" );
 		app.setUser(user);
 		app.save();
 		model = new Model();
-//		user.getBudget().add_Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-//		user.getBudget().add_Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-//		user.getBudget().add_Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-//		user.getBudget().add_Income("test4", 12, new Currency("NIS"), new Date(120,05,01), new Category("salary"));
-
 		user.getBudget().addRecord("test1", "salary", new Date(120,05,01), 100, "Income");
 		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100.2, "Income");
 		user.getBudget().addRecord("test3", "salary", new Date(120,05,01), 0, "Income");
@@ -50,63 +45,6 @@ public class UnitTests {
 	
 
 	/*
-	 * test all user's properties
-	 */
-	@Test
-	public void testUser() {
-		assertEquals(user.getUserName(), "usernameTest");
-		assertEquals(user.getFirstName(), "firstNameTest");
-		assertEquals(user.getLastName(), "lastNameTest");
-		assertEquals(user.getPassword(), "passwordTest");
-	}
-	
-
-	/*
-	 * test load function
-	 */
-	@Test
-	public void testLoadUser() {
-		assertEquals(true, app.load("usernameTest","passwordTest"));
-		assertEquals(false, app.load("usernameTest2","passwordTest")); //expected to be false
-	}
-	
-
-	/*
-	 * test model.isUserNameExist function
-	 */
-	@Test
-	public void testIsUserNameExist() {
-		assertEquals(model.isUserNameExist("usernameTest"),true );
-	}
-	
-	/*
-	 * Test remove transaction function
-	 * create list of 3 transactions, they exists in the user's budget
-	 * remove one transaction from the budget (the one that not exist in the expected list )
-	 * compare
-	*/
-	
-	@Test
-	public void testRemoveTransaction() {
-		List<Income> incomes = new ArrayList<>();
-		incomes.add(new Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
-		incomes.add(new Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
-		incomes.add(new Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
-		
-		int idToDelete = Record.lastIndex()-3;
-		model.removeTransByIndex(idToDelete, 5, 2020);
-		int i =0;
-		for(Income cur : incomes) {
-			assertEquals(cur.getName(), user.getBudget().get_Income().get(i).getName());
-			assertEquals(String.valueOf(cur.getAmount()), String.valueOf(user.getBudget().get_Income().get(i).getAmount()));
-			assertEquals(cur.getCategory().getType(), user.getBudget().get_Income().get(i).getCategory().getType());
-			assertEquals(cur.getCurrency().getType(), user.getBudget().get_Income().get(i).getCurrency().getType());
-			assertEquals(cur.getDate().toString(), user.getBudget().get_Income().get(i).getDate().toString());
-			i++;
-		}
-	}
-	
-	/*
 	 * Test records by month function
 	 * add to user budget 4 transaction with different data
 	 * create list of 4 transactions
@@ -115,16 +53,16 @@ public class UnitTests {
 	
 	@Test
 	public void testRecordsByMonth() {
-		user.getBudget().addRecord("test1", "salary", new Date(120,06,01), 100, "Income");
-		user.getBudget().addRecord("test2", "salary", new Date(120,06,01), 100, "Income");
-		user.getBudget().addRecord("test3", "salary", new Date(120,06,01), -100, "Expense");
-		user.getBudget().addRecord("test4", "salary", new Date(120,06,01), -100, "Expense");
-		List<Record> actualRecords = user.getBudget().getAllRecordsByMonth(6, 120);
+		user.getBudget().addRecord("test1", "salary", new Date(120,07,01), 100, "Income");
+		user.getBudget().addRecord("test2", "salary", new Date(120,07,01), 100, "Income");
+		user.getBudget().addRecord("test3", "salary", new Date(120,07,01), 100, "Expense");
+		user.getBudget().addRecord("test4", "salary", new Date(120,07,01), 100, "Expense");
+		List<Record> actualRecords = user.getBudget().getAllRecordsByMonth(7, 120);
 		List<Record> expectedRecords = new ArrayList<>();
-		expectedRecords.add(new Income("test1", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
-		expectedRecords.add(new Income("test2", 100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
-		expectedRecords.add(new Expenses("test3", -100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
-		expectedRecords.add(new Expenses("test4", -100, new Currency("NIS"), new Date(120,06,01), new Category("salary")));
+		expectedRecords.add(new Income("test1", 100, new Currency("NIS"), new Date(120,07,01), new Category("salary")));
+		expectedRecords.add(new Income("test2", 100, new Currency("NIS"), new Date(120,07,01), new Category("salary")));
+		expectedRecords.add(new Expenses("test3", 100, new Currency("NIS"), new Date(120,07,01), new Category("salary")));
+		expectedRecords.add(new Expenses("test4", 100, new Currency("NIS"), new Date(120,07,01), new Category("salary")));
 		
 		int i = expectedRecords.size()-1;
 		for(Record cur : expectedRecords) {
@@ -198,8 +136,15 @@ public class UnitTests {
 		user.getBudget().addRecord("test2", "salary", new Date(120,05,01), 100.2, "Expense");
 		user.getBudget().addRecord("test3", "salary", new Date(120,05,01), 5, "Expense");
 		user.getBudget().addRecord("test4", "salary", new Date(120,05,01), 12, "Expense");
-		
-		int i =0;
+		/*
+		 * 
+		 * in  the previous tests we added 4 records 
+		 * to the user expenses list,
+		 * so now we set the count to 4,
+		 *  to start with the correct item in the user list
+		 *
+		 */
+		int i =4;
 		for(Expenses cur : expenses) {
 			assertEquals(cur.getName(), user.getBudget().get_expenses().get(i).getName());
 			assertEquals(String.valueOf(cur.getAmount()), String.valueOf(user.getBudget().get_expenses().get(i).getAmount()));
@@ -209,5 +154,34 @@ public class UnitTests {
 			i++;
 		}
 	
+	}
+	
+	
+	/*
+	 * Test remove transaction function
+	 * create list of 3 transactions, they exists in the user's budget
+	 * remove one transaction from the budget (the one that not exist in the expected list )
+	 * compare
+	*/
+	
+	@Test
+	public void testRemoveTransaction() {
+		List<Income> incomes = new ArrayList<>();
+		incomes.add(new Income("test1", 100, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		incomes.add(new Income("test2", 100.2, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		incomes.add(new Income("test3", 0, new Currency("NIS"), new Date(120,05,01), new Category("salary")));
+		User u = app.getUser();
+		
+		int idToDelete = u.getBudget().get_Income().get(3).getId();
+		model.removeTransByIndex(idToDelete, 5, 2020);
+		int i =0;
+		for(Income cur : incomes) {
+			assertEquals(cur.getName(), user.getBudget().get_Income().get(i).getName());
+			assertEquals(String.valueOf(cur.getAmount()), String.valueOf(user.getBudget().get_Income().get(i).getAmount()));
+			assertEquals(cur.getCategory().getType(), user.getBudget().get_Income().get(i).getCategory().getType());
+			assertEquals(cur.getCurrency().getType(), user.getBudget().get_Income().get(i).getCurrency().getType());
+			assertEquals(cur.getDate().toString(), user.getBudget().get_Income().get(i).getDate().toString());
+			i++;
+		}
 	}
 }
