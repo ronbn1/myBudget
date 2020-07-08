@@ -5,9 +5,6 @@ import java.util.*;
 
 public abstract class  Record  implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private double amount;
@@ -17,7 +14,6 @@ public abstract class  Record  implements Serializable{
 	private static int count = 0;
 	private int id;
 	public Record(String name, double amount, Currency currency, Date date, Category category) {
-		super();
 		this.name = name;
 		this.amount = amount;
 		this.currency = currency;

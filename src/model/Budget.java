@@ -6,27 +6,19 @@ import java.util.*;
 import mybudget.MyBudget;
 
 public class Budget  implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
 	private List<Expenses> expensesList;
 	private List<Income> incomeList;
 	private double currentBalance;
 
 	public Budget() {
-
 		expensesList = new ArrayList<Expenses>();
 		incomeList = new ArrayList<Income>();
-
-
 		currentBalance = 0;
 	}
 
 	/*
 	  add new expense record to user's budget
-	 
 	 */
 	public void add_Expense(Record e) {
 		expensesList.add((Expenses) e);
@@ -34,7 +26,6 @@ public class Budget  implements Serializable{
 	}
 
 
-	
 	/*
 	  add new income record to user's budget
 	 

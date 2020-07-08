@@ -21,9 +21,7 @@ public class View {
 	private Register registerView = null;
 	private Dashboard dashboardView = null;
 
-	/**
-	 * @wbp.parser.entryPoint
-	 */
+
 	
 	/*
 	 *  Init the main frame
