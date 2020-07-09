@@ -100,7 +100,7 @@ public class Model  {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} finally {
 			if (ois != null)
 				try {
